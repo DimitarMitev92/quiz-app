@@ -175,7 +175,7 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     .sort(() => Math.random() - 0.5)
     .forEach((txt) => {
       let el = document.createElement("p");
-      el.textContent = txt;
+      el.innerHTML = txt;
       quizCardAnswersContainer.appendChild(el);
     });
 
