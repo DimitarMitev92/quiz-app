@@ -60,25 +60,42 @@ function newGame() {
 }
 
 function downloadZip(event) {
-  let eventEl = event.target;
   console.log("download zip");
 }
 function gameOver() {
-  console.log(localStorageGet("userData"));
   const userData = localStorageGet("userData");
+  console.log(userData);
   addClassName(header, "hidden");
   addClassName(quizzesContainer, "hidden");
-  const html = `
-    <div class="game-over">
-      <h2>${userData.name} your score is: ${userData.correctAnswers} / ${userData.passedQuestions}</h2>
-      <div class=game-over-buttons>
-        <a href="#" onclick="newGame()">New Game</a>
-        <a href="#" onclick="downloadZip(event)">Download info</a>
-      </div>
-    </div>
-  `;
 
-  main.innerHTML += html;
+  let divGameOver = document.createElement("div");
+  divGameOver.className = "game-over";
+
+  let h2 = document.createElement("h2");
+  h2.textContent = `${userData.name} your score is: ${userData.correctAnswers} / ${userData.passedQuestions}`;
+
+  divGameOver.appendChild(h2);
+
+  let divGameOverButtons = document.createElement("div");
+  divGameOverButtons.className = "game-over-buttons";
+
+  divGameOver.appendChild(divGameOverButtons);
+
+  let newGameBtn = document.createElement("a");
+  newGameBtn.textContent = `New Game`;
+  newGameBtn.href = "#";
+  newGameBtn.addEventListener("click", newGame);
+
+  divGameOverButtons.appendChild(newGameBtn);
+
+  let downloadZipBtn = document.createElement("a");
+  downloadZipBtn.textContent = `Download results`;
+  downloadZipBtn.href = "#";
+  downloadZipBtn.addEventListener("click", downloadZip);
+
+  divGameOverButtons.appendChild(downloadZipBtn);
+
+  main.appendChild(divGameOver);
 }
 
 //update user answers in localStorage
@@ -144,7 +161,7 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
   quizCardDiv.appendChild(h3);
 
   let h4 = document.createElement("h4");
-  h4.textContent = `${dataQuiz.question}?`;
+  h4.innerHTML = `${dataQuiz.question}`;
 
   quizCardDiv.appendChild(h4);
 
