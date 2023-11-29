@@ -232,6 +232,9 @@ function fetchQuizzesData(userData) {
     userData.difficulty.length === 0 ? "" : `&difficulty=${userData.difficulty}`
   }${userData.category.length === 0 ? "" : `&category=${userData.category}`}`;
 
+  //clear quizzes container
+  quizzesContainer.innerHTML = "";
+
   fetch(url)
     .then((res) => res.json())
     .then((data) => {
