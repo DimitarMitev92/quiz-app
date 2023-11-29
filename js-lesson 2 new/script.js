@@ -151,6 +151,7 @@ function createZip() {
 //Game Over
 function gameOver() {
   const userData = localStorageGet("userData");
+  console.log(userData);
   addClassName(header, "hidden");
   addClassName(quizzesContainer, "hidden");
   removeClassName(gameOverDiv, "hidden");
@@ -168,11 +169,6 @@ function gameOver() {
     ""
   );
 
-  // let h2 = document.createElement("h2");
-  // h2.textContent = `${userData.name} your score is: ${userData.correctAnswers} / ${userData.passedQuestions}`;
-
-  // divGameOver.appendChild(h2);
-
   let divGameOverButtons = generateHTML(
     "div",
     "",
@@ -183,11 +179,6 @@ function gameOver() {
     "",
     ""
   );
-
-  // let divGameOverButtons = document.createElement("div");
-  // divGameOverButtons.className = "game-over-buttons";
-
-  // divGameOver.appendChild(divGameOverButtons);
 
   let newGameBtn = generateHTML(
     "a",
@@ -200,15 +191,7 @@ function gameOver() {
     newGame
   );
 
-  // let newGameBtn = document.createElement("a");
-  // newGameBtn.textContent = `New Game`;
-  // newGameBtn.href = "#";
-  // newGameBtn.addEventListener("click", newGame);
-
-  // divGameOverButtons.appendChild(newGameBtn);
-
   //create zip and download btn
-
   createZip();
 }
 
@@ -216,19 +199,17 @@ function gameOver() {
 function updateUserAnswers(status) {
   let userData = localStorageGet("userData");
   if (status === "correct") {
-    userData.correctAnswers++;
-    userData.passedQuestions++;
+    userData.correctAnswers = userData.correctAnswers + 1;
+    userData.passedQuestions = userData.passedQuestions + 1;
   } else if (status === "wrong") {
-    userData.wrongAnswers++;
-    userData.passedQuestions++;
+    userData.wrongAnswers = userData.wrongAnswers + 1;
+    userData.passedQuestions = userData.passedQuestions + 1;
   }
-
+  localStorageSet("userData", userData);
   if (userData.passedQuestions === userData.amount) {
     console.log("GAME OVER!!!");
     gameOver();
   }
-
-  localStorageSet("userData", userData);
 }
 
 //checking the clicked answer is correct
@@ -265,9 +246,6 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     "",
     ""
   );
-  // let quizDiv = document.createElement("div");
-  // quizDiv.id = `quiz-${index}`;
-  // quizDiv.className = "quiz";
 
   let h2 = generateHTML(
     "h2",
@@ -280,11 +258,6 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     ""
   );
 
-  // let h2 = document.createElement("h2");
-  // h2.textContent = `Category: ${dataQuiz.category}`;
-
-  // quizDiv.appendChild(h2);
-
   let quizCardDiv = generateHTML(
     "div",
     "",
@@ -295,11 +268,6 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     "",
     ""
   );
-
-  // let quizCardDiv = document.createElement("div");
-  // quizCardDiv.className = "quiz-card";
-
-  // quizDiv.appendChild(quizCardDiv);
 
   let h3 = generateHTML(
     "h3",
@@ -312,11 +280,6 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     ""
   );
 
-  // let h3 = document.createElement("h3");
-  // h3.textContent = `Difficulty: ${dataQuiz.difficulty}`;
-
-  // quizCardDiv.appendChild(h3);
-
   let h4 = generateHTML(
     "h4",
     `${dataQuiz.question}`,
@@ -328,11 +291,6 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     ""
   );
 
-  // let h4 = document.createElement("h4");
-  // h4.innerHTML = `${dataQuiz.question}`;
-
-  // quizCardDiv.appendChild(h4);
-
   let quizCardAnswersContainer = generateHTML(
     "div",
     "",
@@ -343,12 +301,6 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     "click",
     checkingAnswer
   );
-
-  // let quizCardAnswersContainer = document.createElement("div");
-  // quizCardAnswersContainer.className = "quiz-card-answers";
-  // quizCardAnswersContainer.addEventListener("click", checkingAnswer);
-
-  // quizCardDiv.appendChild(quizCardAnswersContainer);
 
   let answers = [dataQuiz.correct_answer, ...dataQuiz.incorrect_answers]
     .sort(() => Math.random() - 0.5)
@@ -363,9 +315,6 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
         "",
         ""
       );
-      // let el = document.createElement("p");
-      // el.innerHTML = txt;
-      // quizCardAnswersContainer.appendChild(el);
     });
 
   parentEl.appendChild(quizDiv);
@@ -373,6 +322,7 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
 
 //fetch quizzes data from API
 function fetchQuizzesData(userData) {
+  addClassName(main, "loader");
   const url = `https://opentdb.com/api.php?amount=${userData.amount}${
     userData.difficulty.length === 0 ? "" : `&difficulty=${userData.difficulty}`
   }${userData.category.length === 0 ? "" : `&category=${userData.category}`}`;
@@ -383,6 +333,7 @@ function fetchQuizzesData(userData) {
   fetch(url)
     .then((res) => res.json())
     .then((data) => {
+      removeClassName(main, "loader");
       localStorageSet(
         "correctAnswers",
         data.results.map((currEl, index) => {
@@ -393,7 +344,7 @@ function fetchQuizzesData(userData) {
         htmlQuizCardGenerator(currQuiz, index, quizzesContainer);
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => alert("Server Error. Please refresh the page."));
 }
 
 //get user inputs and set to localStorage
