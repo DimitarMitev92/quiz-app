@@ -2,6 +2,7 @@
 const main = document.getElementById("main");
 const header = document.getElementById("header");
 const quizzesContainer = document.getElementById("quizzes-container");
+const loginBtn = document.getElementById("login");
 
 const form = document.getElementById("form");
 const numOfQuestionsInput = document.getElementById("num-of-questions");
@@ -58,10 +59,10 @@ function newGame() {
   removeClassName(form, "hidden");
 }
 
-function downloadZip() {
+function downloadZip(event) {
+  let eventEl = event.target;
   console.log("download zip");
 }
-
 function gameOver() {
   console.log(localStorageGet("userData"));
   const userData = localStorageGet("userData");
@@ -72,7 +73,7 @@ function gameOver() {
       <h2>${userData.name} your score is: ${userData.correctAnswers} / ${userData.passedQuestions}</h2>
       <div class=game-over-buttons>
         <a href="#" onclick="newGame()">New Game</a>
-        <a href="#" onclick="downloadZip()">Download info</a>
+        <a href="#" onclick="downloadZip(event)">Download info</a>
       </div>
     </div>
   `;
@@ -123,23 +124,45 @@ function checkingAnswer(event) {
 
 //html quiz card generator
 function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
-  const html = `
-    <div class="quiz" id="quiz-${index}">
-      <h2>Category: ${dataQuiz.category}</h2>
-      <div class="quiz-card">
-          <h3>Difficulty: ${dataQuiz.difficulty}</h3>
-          <h4>${dataQuiz.question}?</h4>
-          <div class="quiz-card-answers" onclick="checkingAnswer(event)">
-            ${[dataQuiz.correct_answer, ...dataQuiz.incorrect_answers]
-              .sort(() => Math.random() - 0.5)
-              .map((answer) => `<p>${answer}</p>`)
-              .join(" ")}
-          </div>
-      </div>
-    </div>
-  `;
+  let quizDiv = document.createElement("div");
+  quizDiv.id = `quiz-${index}`;
+  quizDiv.className = "quiz";
 
-  parentEl.innerHTML += html;
+  let h2 = document.createElement("h2");
+  h2.textContent = `Category: ${dataQuiz.category}`;
+
+  quizDiv.appendChild(h2);
+
+  let quizCardDiv = document.createElement("div");
+  quizCardDiv.className = "quiz-card";
+
+  quizDiv.appendChild(quizCardDiv);
+
+  let h3 = document.createElement("h3");
+  h3.textContent = `Difficulty: ${dataQuiz.difficulty}`;
+
+  quizCardDiv.appendChild(h3);
+
+  let h4 = document.createElement("h4");
+  h4.textContent = `${dataQuiz.question}?`;
+
+  quizCardDiv.appendChild(h4);
+
+  let quizCardAnswersContainer = document.createElement("div");
+  quizCardAnswersContainer.className = "quiz-card-answers";
+  quizCardAnswersContainer.addEventListener("click", checkingAnswer);
+
+  quizCardDiv.appendChild(quizCardAnswersContainer);
+
+  let answers = [dataQuiz.correct_answer, ...dataQuiz.incorrect_answers]
+    .sort(() => Math.random() - 0.5)
+    .forEach((txt) => {
+      let el = document.createElement("p");
+      el.textContent = txt;
+      quizCardAnswersContainer.appendChild(el);
+    });
+
+  parentEl.appendChild(quizDiv);
 }
 
 //fetch quizzes data from API
@@ -187,3 +210,9 @@ function userOptionsQuizHandler(event) {
   updateWelcome();
   fetchQuizzesData(localStorageGet("userData"));
 }
+
+function init() {
+  loginBtn.addEventListener("click", userOptionsQuizHandler);
+}
+
+init();
