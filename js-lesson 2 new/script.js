@@ -1,3 +1,10 @@
+import {
+  BlobWriter,
+  HttpReader,
+  TextReader,
+  ZipWriter,
+} from "https://unpkg.com/@zip.js/zip.js/index.js";
+
 // selected html elements
 const main = document.getElementById("main");
 const header = document.getElementById("header");
@@ -52,16 +59,52 @@ function updateWelcome() {
 }
 
 function newGame() {
+  console.log("clicked");
   const gameOver = document.getElementsByClassName("game-over")[0];
+  console.log(gameOver);
+  nameUserInput.value = "";
   addClassName(gameOver, "hidden");
   localStorageClear();
+
   const form = document.getElementById("form");
   removeClassName(form, "hidden");
 }
 
 function downloadZip(event) {
+  console.log(event.target); // a tag
   console.log("download zip");
+
+  // //create worker
+  // const worker = new Worker("worker.js");
+
+  // // send data to worker.js
+  // worker.postMessage(localStorageGet("userData"));
+
+  // //receive data from worker.js
+  // worker.onmessage = (e) => {
+  //   console.table(e.data);
+  // };
+
+  function getZipFileBlob() {
+    const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
+    console.log(localStorageGet("userData"));
+    zipWriter.add("result.txt", new TextReader(localStorageGet("userData")));
+    return zipWriter.close();
+  }
+
+  function downloadFile(blob) {
+    event.target.download = "result.zip";
+    event.target.href = URL.createObjectURL(blob);
+  }
+
+  getZipFileBlob().then(downloadFile);
+
+  let downloadBtn = document.getElementById("download");
+  // let clickEvent = new Event("click");
+  // downloadBtn.dispatchEvent(clickEvent);
 }
+
+//Game Over
 function gameOver() {
   const userData = localStorageGet("userData");
   console.log(userData);
@@ -91,6 +134,7 @@ function gameOver() {
   let downloadZipBtn = document.createElement("a");
   downloadZipBtn.textContent = `Download results`;
   downloadZipBtn.href = "#";
+  downloadZipBtn.id = "download";
   downloadZipBtn.addEventListener("click", downloadZip);
 
   divGameOverButtons.appendChild(downloadZipBtn);
