@@ -23,6 +23,11 @@ function localStorageGet(name) {
   return JSON.parse(localStorage.getItem(name));
 }
 
+//localStorage - clear
+function localStorageClear() {
+  localStorage.clear();
+}
+
 //class add
 function addClassName(element, className) {
   element.classList.add(className);
@@ -34,7 +39,6 @@ function removeClassName(element, className) {
 
 //get correct answer
 function getCorrectAnswer(index) {
-  console.log(typeof index);
   return localStorageGet("correctAnswers").find((el) => el.index === +index)
     .correct_answer;
 }
@@ -44,6 +48,36 @@ function updateWelcome() {
   welcomeName.textContent = localStorageGet("userData").name;
   welcomeCorrect.textContent = localStorageGet("userData").correctAnswers;
   welcomeWrong.textContent = localStorageGet("userData").wrongAnswers;
+}
+
+function newGame() {
+  const gameOver = document.getElementsByClassName("game-over")[0];
+  addClassName(gameOver, "hidden");
+  localStorageClear();
+  const form = document.getElementById("form");
+  removeClassName(form, "hidden");
+}
+
+function downloadZip() {
+  console.log("download zip");
+}
+
+function gameOver() {
+  console.log(localStorageGet("userData"));
+  const userData = localStorageGet("userData");
+  addClassName(header, "hidden");
+  addClassName(quizzesContainer, "hidden");
+  const html = `
+    <div class="game-over">
+      <h2>${userData.name} your score is: ${userData.correctAnswers} / ${userData.passedQuestions}</h2>
+      <div class=game-over-buttons>
+        <a href="#" onclick="newGame()">New Game</a>
+        <a href="#" onclick="downloadZip()">Download info</a>
+      </div>
+    </div>
+  `;
+
+  main.innerHTML += html;
 }
 
 //update user answers in localStorage
@@ -59,6 +93,7 @@ function updateUserAnswers(status) {
 
   if (userData.passedQuestions === userData.amount) {
     console.log("GAME OVER!!!");
+    gameOver();
   }
 
   localStorageSet("userData", userData);
