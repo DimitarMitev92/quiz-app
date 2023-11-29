@@ -16,10 +16,8 @@ This is a quiz where you can choose the number of questions, the difficulty and 
 `git clone https://github.com/DimitarMitev92/quiz-app.git`
 
 2. **Go to directory js-lesson 2 new:** Open folder js-lesson 2 new:
-3. 
 `cd js-lesson 2 new`
-
-5. **Open with the browser:** Open index.html via browser.
+3. **Open with the browser:** Open index.html via browser.
 
 ## Contributing
 
