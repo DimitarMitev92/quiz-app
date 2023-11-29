@@ -5,11 +5,79 @@
 }
 
 #main {
+  margin: 1em;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 1em;
+}
+
+#form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+
+#form input {
+  padding: 1em;
+}
+
+#form section option {
+  padding: 1em;
+}
+
+#difficulty,
+#category {
+  padding: 1em;
+}
+
+#login {
+  padding: 1em;
+}
+
+#header {
+  width: 220px;
+  position: fixed;
+  top: 0;
+  background-color: #333;
+  color: #fff;
+  font-size: 1.5em;
+  text-align: center;
+  padding: 0.5em;
+}
+
+#game-over {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  justify-content: center;
+  align-items: center;
+  background-color: #444;
+  color: #fff;
+  padding: 2em;
+  border-radius: 10px;
+}
+
+.game-over-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1em;
+}
+
+.game-over-buttons a {
+  text-decoration: none;
+  color: #fff;
+  padding: 1em;
+  background-color: #333;
+  border-radius: 10px;
+}
+
+.game-over-buttons a:hover {
+  cursor: pointer;
+  background-color: #222;
 }
 
 .hidden {
