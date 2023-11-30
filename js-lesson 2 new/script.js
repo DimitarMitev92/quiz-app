@@ -11,7 +11,8 @@ const header = document.getElementById("header");
 const quizzesContainer = document.getElementById("quizzes-container");
 const loginBtn = document.getElementById("login");
 
-const form = document.getElementById("form");
+const formLogin = document.getElementById("form-login");
+const formCreate = document.getElementById("form-create");
 const numOfQuestionsInput = document.getElementById("num-of-questions");
 const categoryInput = document.getElementById("category");
 const difficultyInput = document.getElementById("difficulty");
@@ -112,8 +113,9 @@ function newGame() {
   addClassName(gameOver, "hidden");
   localStorageClear();
 
-  const form = document.getElementById("form");
-  removeClassName(form, "hidden");
+  const formLogin = document.getElementById("form-login");
+  removeClassName(formLogin, "hidden");
+  removeClassName(formCreate, "hidden");
 }
 
 // Create a zip file, where zip file contains user data and create link, where you can download it
@@ -405,7 +407,8 @@ function userOptionsQuizHandler(event) {
 
   localStorageSet("userData", userData);
 
-  addClassName(form, "hidden");
+  addClassName(formLogin, "hidden");
+  addClassName(formCreate, "hidden");
   removeClassName(header, "hidden");
   removeClassName(quizzesContainer, "hidden");
   updateWelcome();

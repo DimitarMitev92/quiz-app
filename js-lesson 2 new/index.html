@@ -15,7 +15,7 @@
       / Wrong answers:<span id="welcome-wrong"></span>
     </header>
     <main id="main">
-      <form id="form">
+      <form id="form-login">
         <label for="num-of-questions">Number of questions: </label>
         <input
           type="number"
@@ -41,6 +41,19 @@
         <label for="name-user">Username: </label>
         <input type="text" id="name-user" />
         <button id="login">Login</button>
+      </form>
+      <form id="form-create">
+        <label for="question-form">Question: </label>
+        <input type="text" id="question-form" required />
+        <label for="correct-answer-form">Correct answer: </label>
+        <input id="correct-answer-form" required />
+        <label for="incorrect-answer1-form">Incorrect first answer: </label>
+        <input id="incorrect-answer1-form" required />
+        <label for="incorrect-answer2-form">Incorrect second answer: </label>
+        <input id="incorrect-answer2-form" required />
+        <label for="incorrect-answer3-form">Incorrect third answer: </label>
+        <input id="incorrect-answer3-form" required />
+        <button id="create">Create</button>
       </form>
       <div class="hidden" id="quizzes-container"></div>
       <div class="hidden" id="game-over"></div>

@@ -14,18 +14,20 @@
   gap: 1em;
 }
 
-#form {
+#form-login,
+#form-create {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 1em;
 }
 
-#form input {
+#form-login input,
+#form-create input {
   padding: 1em;
 }
 
-#form section option {
+#form-login section option {
   padding: 1em;
 }
 
@@ -34,7 +36,8 @@
   padding: 1em;
 }
 
-#login {
+#login,
+#create {
   padding: 1em;
 }
 
