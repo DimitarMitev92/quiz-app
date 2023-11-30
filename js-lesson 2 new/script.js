@@ -396,25 +396,47 @@ function fetchQuizzesData(userData) {
     .then((res) => {
       res.map((res) => {
         return res.json().then((data) => {
+          console.log("fetched data");
           console.log(data);
-          if (Array.isArray(data)) {
-            data.forEach((el, index) => mergeArr.push({ url: el.url }));
+          console.log("mergeArr");
+          console.log(mergeArr);
+          if (
+            typeof data === "object" &&
+            !Array.isArray(data) &&
+            data !== null
+          ) {
+            mergeArr = data.results;
+            console.log(mergeArr);
           } else {
+            console.log("array");
+            console.log(data);
             mergeArr = mergeArr.map((el, index) => {
-              return { ...el, ...data.results[index] };
+              return { ...el, url: data[index].url };
             });
-
-            localStorageSet(
-              "correctAnswers",
-              mergeArr.map((currEl, index) => {
-                return { index: index, correct_answer: currEl.correct_answer };
-              })
-            );
-
-            mergeArr.map((currQuiz, index) => {
-              htmlQuizCardGenerator(currQuiz, index, quizzesContainer);
-            });
+            console.log("questions from user");
+            console.log(localStorageGet("userQuestions"));
+            console.log("MERGE ARR");
+            console.log(mergeArr);
           }
+          // if (Array.isArray(data)) {
+          //   data.forEach((el, index) => mergeArr.push({ url: el.url }));
+          //   console.log(mergeArr);
+          // } else {
+          //   mergeArr = mergeArr.map((el, index) => {
+          //     return { ...el, ...data.results[index] };
+          //   });
+          //   console.log(mergeArr);
+          //   localStorageSet(
+          //     "correctAnswers",
+          //     mergeArr.map((currEl, index) => {
+          //       return { index: index, correct_answer: currEl.correct_answer };
+          //     })
+          //   );
+
+          //   mergeArr.map((currQuiz, index) => {
+          //     htmlQuizCardGenerator(currQuiz, index, quizzesContainer);
+          //   });
+          // }
           removeClassName(main, "loader");
         });
       });
@@ -456,13 +478,15 @@ function createQuestionHandler(event) {
       let questionObj = {
         index: questionArrLocalStorage.length,
         question: questionInput.value,
-        correctAnswer: correctAnswerInput.value,
-        incorrectAnswers: [
+        correct_answer: correctAnswerInput.value,
+        difficulty: "Any",
+        category: "Any",
+        incorrect_answers: [
           incorrectFirstAnswerInput.value,
           incorrectSecondAnswerInput.value,
           incorrectThirdAnswerInput.value,
         ],
-        img: data[0].url,
+        url: data[0].url,
       };
 
       questionArrLocalStorage.push(questionObj);
