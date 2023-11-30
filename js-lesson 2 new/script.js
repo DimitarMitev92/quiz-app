@@ -10,13 +10,30 @@ const main = document.getElementById("main");
 const header = document.getElementById("header");
 const quizzesContainer = document.getElementById("quizzes-container");
 const loginBtn = document.getElementById("login");
+const createBtn = document.getElementById("create");
 
 const formLogin = document.getElementById("form-login");
-const formCreate = document.getElementById("form-create");
+
 const numOfQuestionsInput = document.getElementById("num-of-questions");
 const categoryInput = document.getElementById("category");
 const difficultyInput = document.getElementById("difficulty");
 const nameUserInput = document.getElementById("name-user");
+
+const formCreate = document.getElementById("form-create");
+
+const questionInput = document.getElementById("question-form");
+const correctAnswerInput = document.getElementById("correct-answer-form");
+const incorrectFirstAnswerInput = document.getElementById(
+  "incorrect-answer1-form"
+);
+
+const incorrectSecondAnswerInput = document.getElementById(
+  "incorrect-answer2-form"
+);
+
+const incorrectThirdAnswerInput = document.getElementById(
+  "incorrect-answer3-form"
+);
 
 const welcomeName = document.getElementById("welcome-name");
 const welcomeCorrect = document.getElementById("welcome-correct");
@@ -415,9 +432,34 @@ function userOptionsQuizHandler(event) {
   fetchQuizzesData(localStorageGet("userData"));
 }
 
+function createQuestionHandler(event) {
+  event.preventDefault();
+  let questionArrLocalStorage = localStorageGet("userQuestions");
+  fetch(`https://api.thecatapi.com/v1/images/search`)
+    .then((res) => res.json())
+    .then((data) => {
+      let questionObj = {
+        index: questionArrLocalStorage.length,
+        question: questionInput.value,
+        correctAnswer: correctAnswerInput.value,
+        incorrectAnswers: [
+          incorrectFirstAnswerInput.value,
+          incorrectSecondAnswerInput.value,
+          incorrectThirdAnswerInput.value,
+        ],
+        img: data[0].url,
+      };
+
+      questionArrLocalStorage.push(questionObj);
+      localStorageSet("userQuestions", questionArrLocalStorage);
+    });
+}
+
 // Set event handler for Login button
 function init() {
+  localStorageSet("userQuestions", []);
   loginBtn.addEventListener("click", userOptionsQuizHandler);
+  createBtn.addEventListener("click", createQuestionHandler);
 }
 
 init();
