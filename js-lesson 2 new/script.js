@@ -55,7 +55,8 @@ function generateHTML(
   parentEl,
   href,
   event,
-  eventHandler
+  eventHandler,
+  imgUrl
 ) {
   let currentEl = document.createElement(tag);
 
@@ -77,6 +78,10 @@ function generateHTML(
 
   if (event !== "") {
     currentEl.addEventListener(event, eventHandler);
+  }
+
+  if (imgUrl !== "") {
+    currentEl.src = imgUrl;
   }
 
   if (parentEl !== "") {
@@ -103,7 +108,6 @@ function updateWelcome() {
 function newGame() {
   quizzesContainer.innerHTML = "";
   const gameOver = document.getElementById("game-over");
-  console.log(gameOver);
   nameUserInput.value = "";
   addClassName(gameOver, "hidden");
   localStorageClear();
@@ -140,7 +144,7 @@ function createZip() {
     let divButtons = document
       .getElementsByClassName("game-over-buttons")[0]
       .appendChild(
-        Object.assign(generateHTML("a", "", "", "", "", "", "", ""), {
+        Object.assign(generateHTML("a", "", "", "", "", "", "", "", ""), {
           download: "result.zip",
           href: URL.createObjectURL(blob),
           textContent: "Download results",
@@ -152,7 +156,6 @@ function createZip() {
 //Show message of last correct and wrong answers and buttons for new game and download result
 function gameOver() {
   const userData = localStorageGet("userData");
-  console.log(userData);
   addClassName(header, "hidden");
   addClassName(quizzesContainer, "hidden");
   removeClassName(gameOverDiv, "hidden");
@@ -167,6 +170,7 @@ function gameOver() {
     gameOverDiv,
     "",
     "",
+    "",
     ""
   );
 
@@ -176,6 +180,7 @@ function gameOver() {
     "",
     "game-over-buttons",
     gameOverDiv,
+    "",
     "",
     "",
     ""
@@ -189,7 +194,8 @@ function gameOver() {
     divGameOverButtons,
     "#",
     "click",
-    newGame
+    newGame,
+    ""
   );
 
   createZip();
@@ -244,7 +250,20 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     "",
     "",
     "",
+    "",
     ""
+  );
+  console.log(dataQuiz);
+  let img = generateHTML(
+    "img",
+    "",
+    "",
+    "quiz-image",
+    quizDiv,
+    "",
+    "",
+    "",
+    dataQuiz.url
   );
 
   let h2 = generateHTML(
@@ -253,6 +272,7 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     "",
     "",
     quizDiv,
+    "",
     "",
     "",
     ""
@@ -266,6 +286,7 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     quizDiv,
     "",
     "",
+    "",
     ""
   );
 
@@ -275,6 +296,7 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     "",
     "",
     quizCardDiv,
+    "",
     "",
     "",
     ""
@@ -288,6 +310,7 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     quizCardDiv,
     "",
     "",
+    "",
     ""
   );
 
@@ -299,7 +322,8 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     quizCardDiv,
     "",
     "click",
-    checkingAnswer
+    checkingAnswer,
+    ""
   );
 
   let answers = [dataQuiz.correct_answer, ...dataQuiz.incorrect_answers]
@@ -311,6 +335,7 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
         "",
         "",
         quizCardAnswersContainer,
+        "",
         "",
         "",
         ""
@@ -327,24 +352,40 @@ function fetchQuizzesData(userData) {
     userData.difficulty.length === 0 ? "" : `&difficulty=${userData.difficulty}`
   }${userData.category.length === 0 ? "" : `&category=${userData.category}`}`;
 
+  const urlCat = `https://api.thecatapi.com/v1/images/search?limit=${userData.amount}`;
+
   //clear quizzes container
   quizzesContainer.innerHTML = "";
 
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      removeClassName(main, "loader");
-      localStorageSet(
-        "correctAnswers",
-        data.results.map((currEl, index) => {
-          return { index: index, correct_answer: currEl.correct_answer };
-        })
-      );
-      data.results.map((currQuiz, index) => {
-        htmlQuizCardGenerator(currQuiz, index, quizzesContainer);
+  let mergeArr = [];
+
+  Promise.all([fetch(urlCat), fetch(url)])
+    .then((res) => {
+      res.map((res) => {
+        return res.json().then((data) => {
+          if (Array.isArray(data)) {
+            data.forEach((el, index) => mergeArr.push({ url: el.url }));
+          } else {
+            mergeArr = mergeArr.map((el, index) => {
+              return { ...el, ...data.results[index] };
+            });
+
+            localStorageSet(
+              "correctAnswers",
+              mergeArr.map((currEl, index) => {
+                return { index: index, correct_answer: currEl.correct_answer };
+              })
+            );
+
+            mergeArr.map((currQuiz, index) => {
+              htmlQuizCardGenerator(currQuiz, index, quizzesContainer);
+            });
+          }
+          removeClassName(main, "loader");
+        });
       });
     })
-    .catch((err) => alert("Server Error. Please refresh the page."));
+    .catch((err) => alert("Server Error. Please refresh the page"));
 }
 
 // Gets user inputs from form and set it to the localStorage

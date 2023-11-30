@@ -118,6 +118,10 @@
   gap: 1em;
 }
 
+.quiz-image {
+  width: 250px;
+}
+
 .quiz-card-answers {
   display: flex;
   justify-content: center;
