@@ -5,7 +5,7 @@ import {
   ZipWriter,
 } from "https://unpkg.com/@zip.js/zip.js/index.js";
 
-// selected html elements
+// Selected html elements
 const main = document.getElementById("main");
 const header = document.getElementById("header");
 const quizzesContainer = document.getElementById("quizzes-container");
@@ -23,31 +23,30 @@ const welcomeWrong = document.getElementById("welcome-wrong");
 
 const gameOverDiv = document.getElementById("game-over");
 
-// localStorage
-// localStorage - set
+// Set item to localStorage
 function localStorageSet(name, data) {
   localStorage.setItem(name, JSON.stringify(data));
 }
-//localStorage - get
+// Get item from localStorage
 function localStorageGet(name) {
   return JSON.parse(localStorage.getItem(name));
 }
 
-//localStorage - clear
+// Clear localStorage
 function localStorageClear() {
   localStorage.clear();
 }
 
-//class add
+// Add class to the HTML element
 function addClassName(element, className) {
   element.classList.add(className);
 }
-// class remove
+// Remove class from HTML element
 function removeClassName(element, className) {
   element.classList.remove(className);
 }
 
-//HTML Generator
+// Generator for HTML element (set textContent, id, class, append to parent, href, addEventListener)
 function generateHTML(
   tag,
   textContent,
@@ -87,19 +86,20 @@ function generateHTML(
   return currentEl;
 }
 
-//get correct answer
+// Return correct answer
 function getCorrectAnswer(index) {
   return localStorageGet("correctAnswers").find((el) => el.index === +index)
     .correct_answer;
 }
 
-// header name, status of answers
+// Update badge of name, correct answers and wrong answers
 function updateWelcome() {
   welcomeName.textContent = localStorageGet("userData").name;
   welcomeCorrect.textContent = localStorageGet("userData").correctAnswers;
   welcomeWrong.textContent = localStorageGet("userData").wrongAnswers;
 }
 
+// Reset all quiz settings and clear localStorage and return to form
 function newGame() {
   quizzesContainer.innerHTML = "";
   const gameOver = document.getElementById("game-over");
@@ -112,6 +112,7 @@ function newGame() {
   removeClassName(form, "hidden");
 }
 
+// Create a zip file, where zip file contains user data and create link, where you can download it
 function createZip() {
   // //create worker
   // const worker = new Worker("worker.js");
@@ -148,7 +149,7 @@ function createZip() {
   }
 }
 
-//Game Over
+//Show message of last correct and wrong answers and buttons for new game and download result
 function gameOver() {
   const userData = localStorageGet("userData");
   console.log(userData);
@@ -191,11 +192,10 @@ function gameOver() {
     newGame
   );
 
-  //create zip and download btn
   createZip();
 }
 
-//update user answers in localStorage
+// Updates the user's correct and incorrect answers
 function updateUserAnswers(status) {
   let userData = localStorageGet("userData");
   if (status === "correct") {
@@ -212,7 +212,7 @@ function updateUserAnswers(status) {
   }
 }
 
-//checking the clicked answer is correct
+// Checks whether the answer pressed is correct
 function checkingAnswer(event) {
   if (event.target.tagName.toLowerCase() === "p") {
     const checkedAnswer = event.target.textContent;
@@ -234,7 +234,7 @@ function checkingAnswer(event) {
   }
 }
 
-//html quiz card generator
+// Generator of HTML for quiz card
 function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
   let quizDiv = generateHTML(
     "div",
@@ -320,7 +320,7 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
   parentEl.appendChild(quizDiv);
 }
 
-//fetch quizzes data from API
+// Fetch quizzes from TRIVIA API
 function fetchQuizzesData(userData) {
   addClassName(main, "loader");
   const url = `https://opentdb.com/api.php?amount=${userData.amount}${
@@ -347,7 +347,7 @@ function fetchQuizzesData(userData) {
     .catch((err) => alert("Server Error. Please refresh the page."));
 }
 
-//get user inputs and set to localStorage
+// Gets user inputs from form and set it to the localStorage
 function userOptionsQuizHandler(event) {
   event.preventDefault();
   if (nameUserInput.value.length === 0) return;
@@ -371,6 +371,7 @@ function userOptionsQuizHandler(event) {
   fetchQuizzesData(localStorageGet("userData"));
 }
 
+// Set event handler for Login button
 function init() {
   loginBtn.addEventListener("click", userOptionsQuizHandler);
 }
