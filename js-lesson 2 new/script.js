@@ -279,7 +279,6 @@ function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
     "",
     ""
   );
-  console.log(dataQuiz);
   let img = generateHTML(
     "img",
     "",
@@ -385,10 +384,19 @@ function fetchQuizzesData(userData) {
 
   let mergeArr = [];
 
-  Promise.all([fetch(urlCat), fetch(url)])
+  Promise.all([
+    fetch(urlCat, {
+      headers: {
+        "x-api-key":
+          "live_lfNhUCsjzIAORgFJAEbR0D8CMdmrQ9X7FN0SfjIUsUFTsrxCskTLlaCCvdxLs4HI",
+      },
+    }),
+    fetch(url),
+  ])
     .then((res) => {
       res.map((res) => {
         return res.json().then((data) => {
+          console.log(data);
           if (Array.isArray(data)) {
             data.forEach((el, index) => mergeArr.push({ url: el.url }));
           } else {
