@@ -136,6 +136,8 @@ function newGame() {
   // localStorageClear();
   localStorageRemove("userData");
   localStorageRemove("correctAnswers");
+  localStorageRemove("userQuestions");
+  localStorageSet("userQuestions", []);
 
   const formLogin = document.getElementById("form-login");
   removeClassName(formLogin, "hidden");
@@ -238,7 +240,10 @@ function updateUserAnswers(status) {
     userData.passedQuestions = userData.passedQuestions + 1;
   }
   localStorageSet("userData", userData);
-  if (userData.passedQuestions === userData.amount) {
+  if (
+    userData.passedQuestions ===
+    userData.amount + userData.createdQuestions
+  ) {
     console.log("GAME OVER!!!");
     gameOver();
   }
@@ -396,47 +401,38 @@ function fetchQuizzesData(userData) {
     .then((res) => {
       res.map((res) => {
         return res.json().then((data) => {
-          console.log("fetched data");
-          console.log(data);
-          console.log("mergeArr");
-          console.log(mergeArr);
+          let isDone = false;
           if (
             typeof data === "object" &&
             !Array.isArray(data) &&
             data !== null
           ) {
             mergeArr = data.results;
-            console.log(mergeArr);
           } else {
-            console.log("array");
-            console.log(data);
             mergeArr = mergeArr.map((el, index) => {
               return { ...el, url: data[index].url };
             });
-            console.log("questions from user");
-            console.log(localStorageGet("userQuestions"));
-            console.log("MERGE ARR");
-            console.log(mergeArr);
-          }
-          // if (Array.isArray(data)) {
-          //   data.forEach((el, index) => mergeArr.push({ url: el.url }));
-          //   console.log(mergeArr);
-          // } else {
-          //   mergeArr = mergeArr.map((el, index) => {
-          //     return { ...el, ...data.results[index] };
-          //   });
-          //   console.log(mergeArr);
-          //   localStorageSet(
-          //     "correctAnswers",
-          //     mergeArr.map((currEl, index) => {
-          //       return { index: index, correct_answer: currEl.correct_answer };
-          //     })
-          //   );
 
-          //   mergeArr.map((currQuiz, index) => {
-          //     htmlQuizCardGenerator(currQuiz, index, quizzesContainer);
-          //   });
-          // }
+            localStorageGet("userQuestions").forEach((el, index) => {
+              mergeArr.push(el);
+            });
+
+            // Flag for set localStorage correctAnswers and html quiz card generator
+            isDone = true;
+          }
+
+          if (isDone) {
+            localStorageSet(
+              "correctAnswers",
+              mergeArr.map((currEl, index) => {
+                return { index: index, correct_answer: currEl.correct_answer };
+              })
+            );
+            mergeArr.map((currQuiz, index) => {
+              htmlQuizCardGenerator(currQuiz, index, quizzesContainer);
+            });
+          }
+
           removeClassName(main, "loader");
         });
       });
@@ -449,6 +445,9 @@ function userOptionsQuizHandler(event) {
   event.preventDefault();
   if (nameUserInput.value.length === 0) return;
 
+  console.log(
+    +numOfQuestionsInput.value + localStorageGet("userQuestions").length
+  );
   const userData = {
     name: nameUserInput.value,
     amount: +numOfQuestionsInput.value,
@@ -457,6 +456,7 @@ function userOptionsQuizHandler(event) {
     correctAnswers: 0,
     wrongAnswers: 0,
     passedQuestions: 0,
+    createdQuestions: localStorageGet("userQuestions").length,
   };
 
   localStorageSet("userData", userData);
@@ -492,6 +492,7 @@ function createQuestionHandler(event) {
       questionArrLocalStorage.push(questionObj);
       localStorageSet("userQuestions", questionArrLocalStorage);
     });
+  alert("You successfully create an question. :)");
 }
 
 // Set event handler for Login button
