@@ -1,9 +1,9 @@
-import {
-  BlobWriter,
-  HttpReader,
-  TextReader,
-  ZipWriter,
-} from "https://unpkg.com/@zip.js/zip.js/index.js";
+// import {
+//   BlobWriter,
+//   HttpReader,
+//   TextReader,
+//   ZipWriter,
+// } from "https://unpkg.com/@zip.js/zip.js/index.js";
 
 // Selected html elements
 const main = document.getElementById("main");
@@ -146,39 +146,33 @@ function newGame() {
 
 // Create a zip file, where zip file contains user data and create link, where you can download it
 function createZip() {
-  // //create worker
-  // const worker = new Worker("worker.js");
-
-  // // send data to worker.js
-  // worker.postMessage(localStorageGet("userData"));
-
-  // //receive data from worker.js
-  // worker.onmessage = (e) => {
-  //   console.table(e.data);
-  // };
-
-  getZipFileBlob().then(downloadFile);
-
-  function getZipFileBlob() {
-    const zipWriter = new ZipWriter(new BlobWriter("application/zip"));
-    zipWriter.add(
-      "result.txt",
-      new TextReader(JSON.stringify(localStorageGet("userData")))
-    );
-    return zipWriter.close();
-  }
-
-  function downloadFile(blob) {
-    let divButtons = document
-      .getElementsByClassName("game-over-buttons")[0]
-      .appendChild(
-        Object.assign(generateHTML("a", "", "", "", "", "", "", "", ""), {
-          download: "result.zip",
-          href: URL.createObjectURL(blob),
-          textContent: "Download results",
+  // worker
+  ////////////////////////////////////////
+  const downloadBtn = document.createElement("a");
+  downloadBtn.id = "download";
+  downloadBtn.innerHTML = "Download results";
+  downloadBtn.addEventListener("click", () => {
+    let userData = JSON.stringify(localStorageGet("userData"));
+    console.log(userData);
+    const worker = new Worker("worker.js", { type: "module" });
+    worker.onmessage = (e) => {
+      const clickBtn = document.body.appendChild(
+        Object.assign(document.createElement("a"), {
+          download: "results.zip",
+          href: URL.createObjectURL(e.data),
+          textContent: "download",
         })
       );
-  }
+      clickBtn.click();
+      document.body.removeChild(clickBtn);
+    };
+    worker.postMessage({ userData });
+  });
+
+  document
+    .getElementsByClassName("game-over-buttons")[0]
+    .appendChild(downloadBtn);
+  //////////////////////////////////////////
 }
 
 //Show message of last correct and wrong answers and buttons for new game and download result
