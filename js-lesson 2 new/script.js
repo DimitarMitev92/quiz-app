@@ -148,16 +148,12 @@ function newGame() {
 function createZip() {
   // worker
   ////////////////////////////////////////
-  const downloadBtn = document.createElement("a");
-  downloadBtn.id = "download";
-  downloadBtn.innerHTML = "Download results";
-  downloadBtn.addEventListener("click", () => {
+  let zipHandler = () => {
     let userData = JSON.stringify(localStorageGet("userData"));
-    console.log(userData);
     const worker = new Worker("worker.js", { type: "module" });
     worker.onmessage = (e) => {
       const clickBtn = document.body.appendChild(
-        Object.assign(document.createElement("a"), {
+        Object.assign(generateHTML("a", "", "", "", "", "", "", "", ""), {
           download: "results.zip",
           href: URL.createObjectURL(e.data),
           textContent: "download",
@@ -167,11 +163,24 @@ function createZip() {
       document.body.removeChild(clickBtn);
     };
     worker.postMessage({ userData });
-  });
+  };
+
+  const downloadBtn = generateHTML(
+    "a",
+    "Download results",
+    "download",
+    "",
+    "",
+    "",
+    "click",
+    zipHandler,
+    ""
+  );
 
   document
     .getElementsByClassName("game-over-buttons")[0]
     .appendChild(downloadBtn);
+
   //////////////////////////////////////////
 }
 
