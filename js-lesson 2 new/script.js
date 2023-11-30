@@ -50,6 +50,11 @@ function localStorageGet(name) {
   return JSON.parse(localStorage.getItem(name));
 }
 
+// Remove item from localStorage
+function localStorageRemove(name) {
+  localStorage.removeItem(name);
+}
+
 // Clear localStorage
 function localStorageClear() {
   localStorage.clear();
@@ -128,7 +133,9 @@ function newGame() {
   const gameOver = document.getElementById("game-over");
   nameUserInput.value = "";
   addClassName(gameOver, "hidden");
-  localStorageClear();
+  // localStorageClear();
+  localStorageRemove("userData");
+  localStorageRemove("correctAnswers");
 
   const formLogin = document.getElementById("form-login");
   removeClassName(formLogin, "hidden");
