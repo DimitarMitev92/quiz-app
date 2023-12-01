@@ -511,7 +511,11 @@ function createQuestionHandler(event) {
 function generateDogHandler(event) {
   event.preventDefault();
 
-  const ws = new WebSocket("ws://localhost:8080");
+  // Use localserver
+  // const ws = new WebSocket("ws://localhost:8080");
+
+  //  Use docker for back-end
+  const ws = new WebSocket("ws://0.0.0.0:8080");
 
   ws.addEventListener("open", () => {
     console.log("We are connected!");
