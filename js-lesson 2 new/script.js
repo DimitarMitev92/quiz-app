@@ -149,6 +149,7 @@ function newGame() {
   const formLogin = document.getElementById("form-login");
   removeClassName(formLogin, "hidden");
   removeClassName(formCreate, "hidden");
+  removeClassName(dogsContainer, "hidden");
 }
 
 // Create a zip file, where zip file contains user data and create link, where you can download it
@@ -473,6 +474,8 @@ function userOptionsQuizHandler(event) {
 
   addClassName(formLogin, "hidden");
   addClassName(formCreate, "hidden");
+  addClassName(dogsContainer, "hidden");
+
   removeClassName(header, "hidden");
   removeClassName(quizzesContainer, "hidden");
   updateWelcome();
@@ -507,7 +510,33 @@ function createQuestionHandler(event) {
 
 function generateDogHandler(event) {
   event.preventDefault();
-  console.log(breedInput.value);
+
+  const ws = new WebSocket("ws://localhost:8080");
+
+  ws.addEventListener("open", () => {
+    console.log("We are connected!");
+
+    ws.send(breedInput.value);
+  });
+
+  ws.addEventListener("message", (e) => {
+    fetch(e.data)
+      .then((res) => res.json())
+      .then((dogObj) => {
+        dogsImgContainer.innerHTML = "";
+        generateHTML(
+          "img",
+          "",
+          "img-dog",
+          "",
+          dogsImgContainer,
+          "",
+          "",
+          "",
+          dogObj.message
+        );
+      });
+  });
 }
 
 // Set event handler for Login button
