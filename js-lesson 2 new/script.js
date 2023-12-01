@@ -35,6 +35,13 @@ const incorrectThirdAnswerInput = document.getElementById(
   "incorrect-answer3-form"
 );
 
+const dogsContainer = document.getElementById("dogs-wrapper");
+const dogsImgContainer = document.getElementById("dogs-img-container");
+
+const formDog = document.getElementById("dogs-form");
+const breedInput = document.getElementById("dogs-select");
+const dogBtn = document.getElementById("dogBtn");
+
 const welcomeName = document.getElementById("welcome-name");
 const welcomeCorrect = document.getElementById("welcome-correct");
 const welcomeWrong = document.getElementById("welcome-wrong");
@@ -498,11 +505,17 @@ function createQuestionHandler(event) {
   alert("You successfully create an question. :)");
 }
 
+function generateDogHandler(event) {
+  event.preventDefault();
+  console.log(breedInput.value);
+}
+
 // Set event handler for Login button
 function init() {
   localStorageSet("userQuestions", []);
   loginBtn.addEventListener("click", userOptionsQuizHandler);
   createBtn.addEventListener("click", createQuestionHandler);
+  dogBtn.addEventListener("click", generateDogHandler);
 }
 
 init();
