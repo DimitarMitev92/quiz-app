@@ -47,24 +47,12 @@ function localStorageSet(name, data) {
     JSON.stringify(data),
     "secret key"
   ).toString();
-  console.log("data");
-  console.log(data);
-  console.log("encryptedMessage");
-  console.log(encryptedMessage);
   localStorage.setItem(name, encryptedMessage);
 }
 // Get item from localStorage
 function localStorageGet(name) {
-  console.log("name");
-  console.log(name);
-  console.log(localStorage.getItem(name));
   let bytes = CryptoJS.AES.decrypt(localStorage.getItem(name), "secret key");
-  console.log("bytes");
-  console.log(bytes);
   let decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-  console.log(decryptedData);
-  console.log("decryotedData");
-  console.log(decryptedData);
   return decryptedData;
 }
 
@@ -88,48 +76,32 @@ function removeClassName(element, className) {
 }
 
 // Generator for HTML element (set textContent, id, class, append to parent, href, addEventListener)
-function generateHTML(
-  tag,
-  textContent,
-  id,
-  className,
-  parentEl,
-  href,
-  event,
-  eventHandler,
-  imgUrl
-) {
-  let currentEl = document.createElement(tag);
+function generateHTML(tag, parentEl, attributes) {
+  let element = document.createElement(tag);
 
-  if (textContent !== "") {
-    currentEl.innerHTML = textContent;
+  if (attributes) {
+    for (const key in attributes) {
+      if (key === "textContent") {
+        element.innerHTML = attributes[key];
+      } else if (key === "id") {
+        element.setAttribute("id", attributes[key]);
+      } else if (key === "className") {
+        element.setAttribute("class", attributes[key]);
+      } else if (key === "href") {
+        element.setAttribute("href", attributes[key]);
+      } else if (key === "event") {
+        element.addEventListener(attributes[key], attributes.eventHandler);
+      } else if (key === "imgUrl") {
+        element.setAttribute("src", attributes[key]);
+      }
+    }
   }
 
-  if (id !== "") {
-    currentEl.id = id;
+  if (parentEl) {
+    parentEl.appendChild(element);
   }
 
-  if (className !== "") {
-    currentEl.className = className;
-  }
-
-  if (href !== "") {
-    currentEl.href = href;
-  }
-
-  if (event !== "") {
-    currentEl.addEventListener(event, eventHandler);
-  }
-
-  if (imgUrl !== "") {
-    currentEl.src = imgUrl;
-  }
-
-  if (parentEl !== "") {
-    parentEl.appendChild(currentEl);
-  }
-
-  return currentEl;
+  return element;
 }
 
 // Return correct answer
@@ -172,7 +144,7 @@ function createZip() {
     const worker = new Worker("worker.js", { type: "module" });
     worker.onmessage = (e) => {
       const clickBtn = document.body.appendChild(
-        Object.assign(generateHTML("a", "", "", "", "", "", "", "", ""), {
+        Object.assign(generateHTML("a"), {
           download: "results.zip",
           href: URL.createObjectURL(e.data),
           textContent: "download",
@@ -184,17 +156,12 @@ function createZip() {
     worker.postMessage({ userData });
   };
 
-  const downloadBtn = generateHTML(
-    "a",
-    "Download results",
-    "download",
-    "",
-    "",
-    "",
-    "click",
-    zipHandler,
-    ""
-  );
+  const downloadBtn = generateHTML("a", null, {
+    textContent: "Download results",
+    id: "download",
+    event: "click",
+    eventHandler: zipHandler,
+  });
 
   document
     .getElementsByClassName("game-over-buttons")[0]
@@ -212,41 +179,20 @@ function gameOver() {
 
   gameOverDiv.innerHTML = "";
 
-  let h2 = generateHTML(
-    "h2",
-    `${userData.name} your score is: ${userData.correctAnswers} / ${userData.passedQuestions}`,
-    "",
-    "",
-    gameOverDiv,
-    "",
-    "",
-    "",
-    ""
-  );
+  let h2 = generateHTML("h2", gameOverDiv, {
+    textContent: `${userData.name} your score is: ${userData.correctAnswers} / ${userData.passedQuestions}`,
+  });
 
-  let divGameOverButtons = generateHTML(
-    "div",
-    "",
-    "",
-    "game-over-buttons",
-    gameOverDiv,
-    "",
-    "",
-    "",
-    ""
-  );
+  let divGameOverButtons = generateHTML("div", gameOverDiv, {
+    className: "game-over-buttons",
+  });
 
-  let newGameBtn = generateHTML(
-    "a",
-    "New Game",
-    "",
-    "",
-    divGameOverButtons,
-    "#",
-    "click",
-    newGame,
-    ""
-  );
+  let newGameBtn = generateHTML("a", divGameOverButtons, {
+    textContent: "New Game",
+    href: "#",
+    event: "click",
+    eventHandler: newGame,
+  });
 
   createZip();
 }
@@ -295,103 +241,44 @@ function checkingAnswer(event) {
 
 // Generator of HTML for quiz card
 function htmlQuizCardGenerator(dataQuiz, index, parentEl) {
-  let quizDiv = generateHTML(
-    "div",
-    "",
-    `quiz-${index}`,
-    "quiz",
-    "",
-    "",
-    "",
-    "",
-    ""
-  );
-  let img = generateHTML(
-    "img",
-    "",
-    "",
-    "quiz-image",
-    quizDiv,
-    "",
-    "",
-    "",
-    dataQuiz.url
-  );
+  let quizDiv = generateHTML("div", null, {
+    id: `quiz-${index}`,
+    className: "quiz",
+  });
 
-  let h2 = generateHTML(
-    "h2",
-    `Category: ${dataQuiz.category}`,
-    "",
-    "",
-    quizDiv,
-    "",
-    "",
-    "",
-    ""
-  );
+  let img = generateHTML("img", quizDiv, {
+    className: "quiz-image",
+    imgUrl: dataQuiz.url,
+  });
 
-  let quizCardDiv = generateHTML(
-    "div",
-    "",
-    "",
-    "quiz-card",
-    quizDiv,
-    "",
-    "",
-    "",
-    ""
-  );
+  let h2 = generateHTML("h2", quizDiv, {
+    textContent: `Category: ${dataQuiz.category}`,
+  });
 
-  let h3 = generateHTML(
-    "h3",
-    `Difficulty: ${dataQuiz.difficulty}`,
-    "",
-    "",
-    quizCardDiv,
-    "",
-    "",
-    "",
-    ""
-  );
+  let quizCardDiv = generateHTML("div", quizDiv, {
+    className: "quiz-card",
+  });
 
-  let h4 = generateHTML(
-    "h4",
-    `${dataQuiz.question}`,
-    "",
-    "",
-    quizCardDiv,
-    "",
-    "",
-    "",
-    ""
-  );
+  let h3 = generateHTML("h3", quizCardDiv, {
+    textContent: `Difficulty: ${dataQuiz.difficulty}`,
+  });
 
-  let quizCardAnswersContainer = generateHTML(
-    "div",
-    "",
-    "",
-    "quiz-card-answers",
-    quizCardDiv,
-    "",
-    "click",
-    checkingAnswer,
-    ""
-  );
+  let h4 = generateHTML("h4", quizCardDiv, {
+    textContent: `${dataQuiz.question}`,
+  });
+
+  let quizCardAnswersContainer = generateHTML("div", quizCardDiv, {
+    className: "quiz-card-answers",
+    event: "click",
+    eventHandler: checkingAnswer,
+  });
 
   let answers = [dataQuiz.correct_answer, ...dataQuiz.incorrect_answers]
     .sort(() => Math.random() - 0.5)
     .forEach((txt) => {
-      let el = generateHTML(
-        "p",
-        txt,
-        "",
-        "",
-        quizCardAnswersContainer,
-        "",
-        "",
-        "",
-        ""
-      );
+      let el = generateHTML("p", quizCardAnswersContainer, {
+        textContent: txt,
+      });
     });
 
   parentEl.appendChild(quizDiv);
@@ -467,9 +354,6 @@ function userOptionsQuizHandler(event) {
   event.preventDefault();
   if (nameUserInput.value.length === 0) return;
 
-  console.log(
-    +numOfQuestionsInput.value + localStorageGet("userQuestions").length
-  );
   const userData = {
     name: nameUserInput.value,
     amount: +numOfQuestionsInput.value,
@@ -539,17 +423,11 @@ function generateDogHandler(event) {
       .then((res) => res.json())
       .then((dogObj) => {
         dogsImgContainer.innerHTML = "";
-        generateHTML(
-          "img",
-          "",
-          "img-dog",
-          "",
-          dogsImgContainer,
-          "",
-          "",
-          "",
-          dogObj.message
-        );
+
+        generateHTML("img", dogsImgContainer, {
+          id: "img-dog",
+          imgUrl: dogObj.message,
+        });
       });
   });
 }
