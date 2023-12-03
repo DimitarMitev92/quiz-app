@@ -1,10 +1,3 @@
-// import {
-//   BlobWriter,
-//   HttpReader,
-//   TextReader,
-//   ZipWriter,
-// } from "https://unpkg.com/@zip.js/zip.js/index.js";
-
 // Selected html elements
 const main = document.getElementById("main");
 const header = document.getElementById("header");
@@ -50,11 +43,29 @@ const gameOverDiv = document.getElementById("game-over");
 
 // Set item to localStorage
 function localStorageSet(name, data) {
-  localStorage.setItem(name, JSON.stringify(data));
+  const encryptedMessage = CryptoJS.AES.encrypt(
+    JSON.stringify(data),
+    "secret key"
+  ).toString();
+  console.log("data");
+  console.log(data);
+  console.log("encryptedMessage");
+  console.log(encryptedMessage);
+  localStorage.setItem(name, encryptedMessage);
 }
 // Get item from localStorage
 function localStorageGet(name) {
-  return JSON.parse(localStorage.getItem(name));
+  console.log("name");
+  console.log(name);
+  console.log(localStorage.getItem(name));
+  let bytes = CryptoJS.AES.decrypt(localStorage.getItem(name), "secret key");
+  console.log("bytes");
+  console.log(bytes);
+  let decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  console.log(decryptedData);
+  console.log("decryotedData");
+  console.log(decryptedData);
+  return decryptedData;
 }
 
 // Remove item from localStorage
