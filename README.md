@@ -8,6 +8,8 @@ This is a quiz where you can choose the number of questions, the difficulty and 
 - **Difficulty:** Select type of difficuty (easy, medium, hard, any).
 - **Category:** Select type of category (sport, geography, history, any).
 - **User name:** Save the user name till the end of the game.
+- **Download zip:** You can download result from your quiz.
+- **Generate dog image:** You can generate image of dog by breed (using websocket).
 
 ## Getting Started
 
