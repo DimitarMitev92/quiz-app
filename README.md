@@ -21,7 +21,15 @@ This is a quiz where you can choose the number of questions, the difficulty and 
    
 `cd js-lesson 2 new`
 
-4. **Open with the browser:** Open index.html via browser.
+3. **Open with the browser:** Open index.html via browser.
+
+4. **Uncommend line 410 in script.js**: You must uncommend line 410 and commend line 413 in script.js to use localhost to run the server.
+
+5.**Run server**: Open server foulder.
+
+`cd server`
+
+`node index.js`
 
 ## Contributing
 
