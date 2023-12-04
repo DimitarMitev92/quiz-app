@@ -9,5 +9,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/crypto-js": "^4.2.1",
+    "@types/node": "^20.10.3",
+    "crypto-js": "^4.2.0"
+  }
 }
