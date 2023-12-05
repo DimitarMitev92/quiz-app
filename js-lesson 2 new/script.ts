@@ -3,66 +3,58 @@ const main: HTMLElement | null = document.getElementById("main");
 const header: HTMLElement | null = document.getElementById("header");
 const quizzesContainer: HTMLElement | null =
   document.getElementById("quizzes-container");
-const loginBtn: HTMLElement | null = document.getElementById(
-  "login"
-) as HTMLButtonElement;
-const createBtn: HTMLElement | null = document.getElementById(
-  "create"
-) as HTMLButtonElement;
+const loginBtn = document.getElementById("login") as HTMLButtonElement | null;
+const createBtn = document.getElementById("create") as HTMLButtonElement | null;
 
-const formLogin: HTMLElement | null = document.getElementById(
+const formLogin = document.getElementById(
   "form-login"
-) as HTMLFormElement;
+) as HTMLFormElement | null;
 
-const numOfQuestionsInput: HTMLElement | null = document.getElementById(
+const numOfQuestionsInput = document.getElementById(
   "num-of-questions"
-) as HTMLFormElement;
-const categoryInput: HTMLElement | null = document.getElementById(
+) as HTMLInputElement | null;
+const categoryInput = document.getElementById(
   "category"
-) as HTMLInputElement;
-const difficultyInput: HTMLElement | null = document.getElementById(
+) as HTMLInputElement | null;
+const difficultyInput = document.getElementById(
   "difficulty"
-) as HTMLInputElement;
-const nameUserInput: HTMLElement | null = document.getElementById(
+) as HTMLInputElement | null;
+const nameUserInput = document.getElementById(
   "name-user"
-) as HTMLInputElement;
+) as HTMLInputElement | null;
 
-const formCreate: HTMLElement | null = document.getElementById(
+const formCreate = document.getElementById(
   "form-create"
-) as HTMLFormElement;
+) as HTMLFormElement | null;
 
-const questionInput: HTMLElement | null = document.getElementById(
+const questionInput = document.getElementById(
   "question-form"
-) as HTMLInputElement;
-const correctAnswerInput: HTMLElement | null = document.getElementById(
+) as HTMLInputElement | null;
+const correctAnswerInput = document.getElementById(
   "correct-answer-form"
-) as HTMLInputElement;
-const incorrectFirstAnswerInput: HTMLElement | null = document.getElementById(
+) as HTMLInputElement | null;
+const incorrectFirstAnswerInput = document.getElementById(
   "incorrect-answer1-form"
-) as HTMLInputElement;
+) as HTMLInputElement | null;
 
-const incorrectSecondAnswerInput: HTMLElement | null = document.getElementById(
+const incorrectSecondAnswerInput = document.getElementById(
   "incorrect-answer2-form"
-) as HTMLInputElement;
+) as HTMLInputElement | null;
 
-const incorrectThirdAnswerInput: HTMLElement | null = document.getElementById(
+const incorrectThirdAnswerInput = document.getElementById(
   "incorrect-answer3-form"
-) as HTMLInputElement;
+) as HTMLInputElement | null;
 
 const dogsContainer: HTMLElement | null =
   document.getElementById("dogs-wrapper");
 const dogsImgContainer: HTMLElement | null =
   document.getElementById("dogs-img-container");
 
-const formDog: HTMLElement | null = document.getElementById(
-  "dogs-form"
-) as HTMLFormElement;
-const breedInput: HTMLElement | null = document.getElementById(
+const formDog = document.getElementById("dogs-form") as HTMLFormElement | null;
+const breedInput = document.getElementById(
   "dogs-select"
-) as HTMLInputElement;
-const dogBtn: HTMLElement | null = document.getElementById(
-  "dogBtn"
-) as HTMLButtonElement;
+) as HTMLInputElement | null;
+const dogBtn = document.getElementById("dogBtn") as HTMLButtonElement | null;
 
 const welcomeName: HTMLElement | null = document.getElementById("welcome-name");
 const welcomeCorrect: HTMLElement | null =
