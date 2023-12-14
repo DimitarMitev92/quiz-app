@@ -132,8 +132,8 @@ function localStorageGet(name: string) {
     return null;
   }
 
-  let bytes = CryptoJS.AES.decrypt(encryptedData, "secret key");
-  let decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
+  const bytes = CryptoJS.AES.decrypt(encryptedData, "secret key");
+  const decryptedData = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
   return decryptedData;
 }
 
@@ -162,7 +162,7 @@ function generateHTML(
   parentEl: HTMLElement | null,
   attributes: IAttributes | null
 ): HTMLElement {
-  let element = document.createElement(tag);
+  const element = document.createElement(tag);
 
   if (attributes) {
     for (const key in attributes) {
@@ -235,8 +235,8 @@ function newGame(): void {
 function createZip(): void {
   // worker
   ////////////////////////////////////////
-  let zipHandler = () => {
-    let userData = JSON.stringify(localStorageGet("userData"));
+  const zipHandler = () => {
+    const userData = JSON.stringify(localStorageGet("userData"));
     const worker = new Worker("worker.js", { type: "module" });
     worker.onmessage = (e) => {
       // const clickBtn = document.body.appendChild(
@@ -247,7 +247,7 @@ function createZip(): void {
       //   })
       // );
 
-      let downloadBtnZip = generateHTML("a", null, null);
+      const downloadBtnZip = generateHTML("a", null, null);
       const anchorEl = {
         download: "results.zip",
         href: URL.createObjectURL(e.data),
@@ -259,7 +259,7 @@ function createZip(): void {
         ...anchorEl,
       });
 
-      let clickBtn = document.body.appendChild(combinedEl);
+      const clickBtn = document.body.appendChild(combinedEl);
       clickBtn.click();
       document.body.removeChild(clickBtn);
     };
@@ -288,15 +288,15 @@ function gameOver(): void {
   if (gameOverDiv) removeClassName(gameOverDiv, "hidden");
   if (gameOverDiv) gameOverDiv.innerHTML = "";
 
-  let h2 = generateHTML("h2", gameOverDiv, {
+  generateHTML("h2", gameOverDiv, {
     textContent: `${userData.name} your score is: ${userData.correctAnswers} / ${userData.passedQuestions}`,
   });
 
-  let divGameOverButtons = generateHTML("div", gameOverDiv, {
+  const divGameOverButtons = generateHTML("div", gameOverDiv, {
     className: "game-over-buttons",
   });
 
-  let newGameBtn = generateHTML("a", divGameOverButtons, {
+  generateHTML("a", divGameOverButtons, {
     textContent: "New Game",
     href: "#",
     event: "click",
@@ -308,7 +308,7 @@ function gameOver(): void {
 
 // Updates the user's correct and incorrect answers
 function updateUserAnswers(status: string): void {
-  let userData = localStorageGet("userData");
+  const userData = localStorageGet("userData");
   if (status === "correct") {
     userData.correctAnswers = userData.correctAnswers + 1;
     userData.passedQuestions = userData.passedQuestions + 1;
@@ -361,42 +361,42 @@ function htmlQuizCardGenerator(
   index: number,
   parentEl: HTMLElement
 ) {
-  let quizDiv = generateHTML("div", null, {
+  const quizDiv = generateHTML("div", null, {
     id: `quiz-${index}`,
     className: "quiz",
   });
 
-  let img = generateHTML("img", quizDiv, {
+  generateHTML("img", quizDiv, {
     className: "quiz-image",
     imgUrl: dataQuiz.url,
   });
 
-  let h2 = generateHTML("h2", quizDiv, {
+  generateHTML("h2", quizDiv, {
     textContent: `Category: ${dataQuiz.category}`,
   });
 
-  let quizCardDiv = generateHTML("div", quizDiv, {
+  const quizCardDiv = generateHTML("div", quizDiv, {
     className: "quiz-card",
   });
 
-  let h3 = generateHTML("h3", quizCardDiv, {
+  generateHTML("h3", quizCardDiv, {
     textContent: `Difficulty: ${dataQuiz.difficulty}`,
   });
 
-  let h4 = generateHTML("h4", quizCardDiv, {
+  generateHTML("h4", quizCardDiv, {
     textContent: `${dataQuiz.question}`,
   });
 
-  let quizCardAnswersContainer = generateHTML("div", quizCardDiv, {
+  const quizCardAnswersContainer = generateHTML("div", quizCardDiv, {
     className: "quiz-card-answers",
     event: "click",
     eventHandler: checkingAnswer,
   });
 
-  let answers = [dataQuiz.correct_answer, ...(dataQuiz.incorrect_answers || [])]
+  [dataQuiz.correct_answer, ...(dataQuiz.incorrect_answers || [])]
     .sort(() => Math.random() - 0.5)
     .forEach((txt) => {
-      let el = generateHTML("p", quizCardAnswersContainer, {
+      generateHTML("p", quizCardAnswersContainer, {
         textContent: txt,
       });
     });
@@ -508,7 +508,7 @@ function userOptionsQuizHandler(event: Event) {
 
 function createQuestionHandler(event: Event) {
   event.preventDefault();
-  let questionArrLocalStorage = localStorageGet("userQuestions");
+  const questionArrLocalStorage = localStorageGet("userQuestions");
   fetch(`https://api.thecatapi.com/v1/images/search`)
     .then((res) => res.json())
     .then((data) => {
@@ -519,7 +519,7 @@ function createQuestionHandler(event: Event) {
         incorrectSecondAnswerInput &&
         incorrectThirdAnswerInput
       ) {
-        let questionObj = {
+        const questionObj = {
           index: questionArrLocalStorage.length,
           question: (questionInput as HTMLInputElement).value,
           correct_answer: (correctAnswerInput as HTMLInputElement).value,
@@ -544,10 +544,10 @@ function generateDogHandler(event: Event) {
   event.preventDefault();
 
   // Use localserver
-  // const ws = new WebSocket("ws://localhost:8080");
+  const ws = new WebSocket("ws://localhost:8080");
 
   //  Use docker for back-end
-  const ws = new WebSocket("ws://0.0.0.0:8080");
+  // const ws = new WebSocket("ws://0.0.0.0:8080");
 
   ws.addEventListener("open", () => {
     console.log("We are connected!");
